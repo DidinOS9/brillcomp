@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePrincipleRequest;
 use App\Models\OurPrinciple;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,8 @@ class OurPrincipleController extends Controller
     public function index()
     {
         //
+        $principles = OurPrinciple::orderByDesc('id')->paginate(10);
+        return view('admin.principles.index', compact('principles'));
     }
 
     /**
@@ -21,14 +24,15 @@ class OurPrincipleController extends Controller
     public function create()
     {
         //
+        return view('admin.principles.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePrincipleRequest $request)
     {
-        //
+        //insert ke DB Pada tabel tertentu
     }
 
     /**
