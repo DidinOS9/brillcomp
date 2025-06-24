@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Models\ProjectClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectClientController extends Controller
 {
@@ -33,6 +34,27 @@ class ProjectClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         //insert ke DB pada tabel tertentu
+        //closure-based transaction
+
+        DB::transaction(function () use ($request){
+            $validated = $request->validated();
+
+            //proses gambar avatar
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $validated['avatar'] = $avatarPath;
+            }
+            
+            //proses gambar logo
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('logos', 'public');
+                $validated['logo'] = $logoPath;
+            }
+            
+            $newClient = ProjectClient::create($validated);
+        });
+
+        return redirect()->route('admin.clients.index');
     }
 
     /**
@@ -65,5 +87,10 @@ class ProjectClientController extends Controller
     public function destroy(ProjectClient $projectClient)
     {
         //
+        DB::transaction(function () use ($projectClient){
+            $projectClient->delete();
+        });
+
+        return redirect()->route('admin.clients.index');
     }
 }

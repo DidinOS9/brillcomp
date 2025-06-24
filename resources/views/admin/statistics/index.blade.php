@@ -27,7 +27,7 @@
                     <div  class="hidden md:flex flex-col">
                         <p class="text-slate-500 text-sm">Date</p>
                         <h3 class="text-indigo-950 text-xl font-bold">
-                            {{$statistic->date->format('M d, Y')}}
+                            {{$statistic->created_at->format('M d, Y')}}
                         </h3>
                     </div>
                     <div class="hidden md:flex flex-row items-center gap-x-3">

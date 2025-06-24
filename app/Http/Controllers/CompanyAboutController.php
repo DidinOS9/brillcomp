@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAboutRequest;
 use App\Models\CompanyAbout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CompanyAboutController extends Controller
 {
@@ -32,6 +33,28 @@ class CompanyAboutController extends Controller
     public function store(StoreAboutRequest $request)
     {
         //insert ke DB pada tabel tertentu
+        //closure-based transaction
+
+        DB::transaction(function () use($request) {
+            $validated = $request->validated();
+
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+                $validated['thumbnail'] = $thumbnailPath;
+            }
+
+            $newAbout = CompanyAbout::create($validated);
+
+            if (!empty($validated['keypoints'])) {
+                foreach ($validated['keypoints'] as $keypoint) {
+                    $newAbout->keypoints()->create([
+                        'keypoint' => $keypoint
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('admin.abouts.index');
     }
 
     /**
@@ -64,5 +87,10 @@ class CompanyAboutController extends Controller
     public function destroy(CompanyAbout $companyAbout)
     {
         //
+        DB::transaction(function () use($companyAbout){
+            $companyAbout->delete();
+        });
+
+        return redirect()->route('admin.abouts.index');
     }
 }

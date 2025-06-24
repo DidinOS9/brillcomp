@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTestimonialRequest;
 use App\Models\ProjectClient;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TestimonialController extends Controller
 {
@@ -35,6 +36,20 @@ class TestimonialController extends Controller
     public function store(StoreTestimonialRequest $request)
     {
         //insert ke DB pada tabel tertentu
+        //closure-based transaction
+
+        DB::transaction(function () use($request){
+            $validated = $request->validated();
+
+            if ($request->hasFile('thumbnail')) {
+                $thumbailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+                $validated['thumbnail'] = $thumbailPath;
+            }
+
+            $newTestimonial = Testimonial::create($validated);
+        });
+
+        return redirect()->route('admin.testimonials.index');
     }
 
     /**
@@ -67,5 +82,10 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         //
+        DB::transaction(function () use($testimonial) {
+            $testimonial->delete();
+        });
+
+        return redirect()->route('admin.testimonials.index');
     }
 }

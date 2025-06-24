@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePrincipleRequest;
 use App\Models\OurPrinciple;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OurPrincipleController extends Controller
 {
@@ -33,6 +34,27 @@ class OurPrincipleController extends Controller
     public function store(StorePrincipleRequest $request)
     {
         //insert ke DB Pada tabel tertentu
+        //closure-based transaction
+
+        DB::transaction(function() use($request){
+            $validated = $request->validated;
+
+            //proses gambar thumbnail
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+                $validated['thumbnail'] = $thumbnailPath;
+            }
+
+            //proses gambar icon
+            if ($request->hasFile('icon')) {
+                $iconPath = $request->file('icon')->store('icons', 'public');
+                $validated['icon'] = $iconPath;
+            }
+
+            dd($validated);
+            $newPrinciple = OurPrinciple::create($validated);
+        });
+        return redirect()->route('admin.principles.index');
     }
 
     /**
@@ -65,5 +87,10 @@ class OurPrincipleController extends Controller
     public function destroy(OurPrinciple $ourPrinciple)
     {
         //
+        DB::transaction(function () use($ourPrinciple){
+            $ourPrinciple->delete();
+        });
+
+        return redirect()->route('admin.principles.index');
     }
 }
