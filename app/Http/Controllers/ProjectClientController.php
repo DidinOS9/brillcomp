@@ -84,11 +84,11 @@ class ProjectClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProjectClient $projectClient)
+    public function destroy(ProjectClient $client)
     {
         //
-        DB::transaction(function () use ($projectClient){
-            $projectClient->delete();
+        DB::transaction(function () use ($client){
+            $client->delete();
         });
 
         return redirect()->route('admin.clients.index');

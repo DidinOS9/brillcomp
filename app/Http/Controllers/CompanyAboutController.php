@@ -25,6 +25,7 @@ class CompanyAboutController extends Controller
     public function create()
     {
         //
+        return view('admin.abouts.create');
     }
 
     /**
@@ -84,11 +85,11 @@ class CompanyAboutController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CompanyAbout $companyAbout)
+    public function destroy(CompanyAbout $about)
     {
         //
-        DB::transaction(function () use($companyAbout){
-            $companyAbout->delete();
+        DB::transaction(function () use($about){
+            $about->delete();
         });
 
         return redirect()->route('admin.abouts.index');

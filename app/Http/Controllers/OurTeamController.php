@@ -43,10 +43,11 @@ class OurTeamController extends Controller
                 $avatarPath = $request->file('avatar')->store('avatars', 'public');
                 $validated['avatar'] = $avatarPath;
            }
-
+        
            $newTeam = OurTeam::create($validated);
+        
         });
-
+        
         return redirect()->route('admin.teams.index');
     }
 
@@ -77,11 +78,11 @@ class OurTeamController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OurTeam $ourTeam)
+    public function destroy(OurTeam $team)
     {
         //
-        DB::transaction(function () use($ourTeam){
-            $ourTeam->delete();
+        DB::transaction(function () use($team){
+            $team->delete();
         });
 
         return redirect()->route('admin.teams.index');

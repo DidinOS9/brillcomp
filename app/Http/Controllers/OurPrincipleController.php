@@ -37,7 +37,7 @@ class OurPrincipleController extends Controller
         //closure-based transaction
 
         DB::transaction(function() use($request){
-            $validated = $request->validated;
+            $validated = $request->validated();
 
             //proses gambar thumbnail
             if ($request->hasFile('thumbnail')) {
@@ -51,7 +51,6 @@ class OurPrincipleController extends Controller
                 $validated['icon'] = $iconPath;
             }
 
-            dd($validated);
             $newPrinciple = OurPrinciple::create($validated);
         });
         return redirect()->route('admin.principles.index');
@@ -84,11 +83,11 @@ class OurPrincipleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OurPrinciple $ourPrinciple)
+    public function destroy(OurPrinciple $principle)
     {
         //
-        DB::transaction(function () use($ourPrinciple){
-            $ourPrinciple->delete();
+        DB::transaction(function () use($principle){
+            $principle->delete();
         });
 
         return redirect()->route('admin.principles.index');
