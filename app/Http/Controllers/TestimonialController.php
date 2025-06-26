@@ -7,6 +7,7 @@ use App\Models\ProjectClient;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class TestimonialController extends Controller
 {
@@ -66,6 +67,9 @@ class TestimonialController extends Controller
     public function edit(Testimonial $testimonial)
     {
         //
+        $clients = ProjectClient::orderByDesc('id')->get();
+
+        return view('admin.testimonials.edit', compact('testimonial', 'clients'));
     }
 
     /**

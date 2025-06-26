@@ -67,9 +67,10 @@ class OurPrincipleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(OurPrinciple $ourPrinciple)
+    public function edit(OurPrinciple $principle)
     {
         //
+        return view('admin.principles.edit', compact('principle'));
     }
 
     /**
