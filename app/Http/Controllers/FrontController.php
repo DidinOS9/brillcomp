@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompanyStatistic;
+use App\Models\CompanyAbout;
 use App\Models\HeroSection;
 use App\Models\OurPrinciple;
 use App\Models\OurTeam;
@@ -22,5 +23,17 @@ class FrontController extends Controller
         $teams = OurTeam::take(7)->get();
         $testimonials = Testimonial::take(4)->get();
         return view('front.index', compact('hero_section','statistics', 'principles', 'products', 'teams', 'testimonials'));
+    }
+
+    public function team()  {
+        $teams = OurTeam::take(7)->get();
+        $statistics = CompanyStatistic::take(4)->get();
+        return view('front.team', compact('teams', 'statistics'));
+    }
+
+    public function about() {
+        $statistics = CompanyStatistic::take(4)->get();
+        $abouts = CompanyAbout::take(2)->get();
+        return view('front.about', compact('statistics', 'abouts'));
     }
 }
